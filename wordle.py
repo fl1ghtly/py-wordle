@@ -9,11 +9,11 @@ def find_anchors(letters):
             anchor.append(i)
     return anchor
 
-def find_incorrect(letters):
-    incorrect = []
-    for letter in letters:
-        if '-' in letter:
-            incorrect.append(letter[0])
+def find_incorrect(letters, incorrect) -> list:
+    for i in range(len(letters)):
+        if '-' in letters[i]:
+            incorrect[i].append(letters[i])
+        
     return incorrect
 
 def check_valid_anchor(word, letters, anchor):
