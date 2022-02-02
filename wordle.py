@@ -26,7 +26,22 @@ def check_valid_anchor(word, letters, anchor):
         
     return True
 
-def is_invalid_guess(letters, word, anchor, incorrect_ltrs):
+def clean_input(l):
+    '''Takes a list and recursively iterates to find all non-list
+    elements and returns the first character of it
+    Args:
+        l (list): A (nested) list of strings
+    Returns:
+        new_list (list): returns the same list but with only the first 
+        character
+    '''
+    new_list = []
+    for element in l:
+        if type(element) is list:
+            new_list.append(clean_input(element))
+        else:
+            new_list.append(element[0])
+    return new_list
     # Checks if all the anchor letters are in the correct position
     for i in range(len(letters)):
         if i in anchor:
