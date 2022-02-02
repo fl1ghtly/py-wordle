@@ -2,7 +2,7 @@ import os, sys
 
 words_path = os.path.join(sys.path[0], 'words.txt')
 
-def find_anchors(letters):
+def find_anchors(letters) -> list:
     anchor = []
     for i in range(len(letters)):
         if '*' in letters[i]:
@@ -16,7 +16,7 @@ def find_incorrect(letters, incorrect) -> list:
         
     return incorrect
 
-def check_valid_anchor(word, letters, anchor):
+def check_valid_anchor(word, letters, anchor) -> bool:
     if not anchor:
         return False
     
@@ -42,6 +42,20 @@ def clean_input(l):
         else:
             new_list.append(element[0])
     return new_list
+
+def is_invalid_guess(letters, word, anchor, incorrect_ltrs) -> bool:
+    '''Finds if a word has either letters that have already been 
+    guessed as incorrect or does not contain the anchor letters
+    in the correct position
+    
+    Args:
+        letters (list): letters of the guess
+        words (list): letters of the current word to check
+        anchors (list): list of indexes that are correct guesses
+        incorrect_ltrs (list): list of already guessed letters
+    Return:
+        boolean
+    '''
     # Checks if all the anchor letters are in the correct position
     for i in range(len(letters)):
         if i in anchor:
@@ -57,7 +71,16 @@ def clean_input(l):
         
     return False
 
-def get_potential_words(letters, words, anchors):
+def get_potential_words(letters, words, anchors) -> list:
+    '''Finds all possible words given a few anchor letters
+    or if given no anchor, returns words
+        letters (list): letters of the guess
+        words (list): list of words to check
+        anchors (list): list of indexes that are correct guesses
+    Args:
+    Returns:
+        list: list of potential words
+    '''
     potential_words = []
     if not anchors:
         return words
