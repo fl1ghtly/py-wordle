@@ -59,6 +59,8 @@ def clean_input(l):
 
 def get_potential_words(letters, words, anchors):
     potential_words = []
+    if not anchors:
+        return words
     for word in words:
         if check_valid_anchor(word, letters, anchors):
             potential_words.append(word)
