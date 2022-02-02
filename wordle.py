@@ -91,19 +91,21 @@ def get_potential_words(letters, words, anchors) -> list:
             potential_words.append(word)
     return potential_words
 
-def guess_word(letters, words, anchors=[], incorrect_ltrs=[]):
+def guess_word(guess, words, anchors=[], incorrect_ltrs=[]) -> list:
     guesses = []
     # TODO optimize search by stopping loop for letters at anchor
     # index 0 because this is a dictionary
-    potential = get_potential_words(letters, words, anchors)
+    potential = get_potential_words(guess, words, anchors)
 
     for pword in potential:
-        if is_invalid_guess(letters, pword, anchors, incorrect_ltrs):
+        # Skips the word if it is invalid
+        if is_invalid_guess(guess, pword, anchors, incorrect_ltrs):
             continue
         
         valid = True
-        for letter in letters:
-            if letter in incorrect_ltrs:
+        for i, letter in enumerate(guess):
+            # Skips over letters that are already known to be incorrect
+            if letter in incorrect_ltrs[i]:
                 continue
             if letter not in pword and letter != '?':
                 valid = False
@@ -115,11 +117,11 @@ def guess_word(letters, words, anchors=[], incorrect_ltrs=[]):
 
 if __name__ == '__main__':
     running = True
-
     with open(words_path, 'r') as f:
-        words = f.readlines()
+        words = f.read().splitlines()
     possible_words = words
     
+    incorrect = [[], [], [], [], []]
     while running:
         letters = input("What are the correct letters: ").split()
 
@@ -128,9 +130,9 @@ if __name__ == '__main__':
             continue
 
         anchor = find_anchors(letters)
-        incorrect = []
-        incorrect.extend(find_incorrect(letters))
-        modified_letters = [s[0] for s in letters]
+        incorrect = find_incorrect(letters, incorrect)
+        incorrect = clean_input(incorrect)
+        modified_letters = clean_input(letters)
         possible_words = guess_word(modified_letters, possible_words, anchor, incorrect)
         
         print(possible_words)
