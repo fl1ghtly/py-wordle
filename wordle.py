@@ -50,9 +50,10 @@ def clean_input(l):
             return True
         
     # Checks if the word contains already guessed letters
-    for letter in incorrect_ltrs:
-        if letter in word:
-            return True
+    for i in range(len(incorrect_ltrs)):
+        for j in range(len(incorrect_ltrs[i])):
+            if incorrect_ltrs[i][j][0] == word[i]:
+                return True
         
     return False
 
