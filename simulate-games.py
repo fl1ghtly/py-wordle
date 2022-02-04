@@ -11,3 +11,10 @@ class Simulation:
     def __init__(self) -> None:
         self.assisstant = Assistant()
         self.game = Game()
+        
+    def choose_initial_word(self):
+        with open(words_path, 'r') as f:
+            words = f.read().splitlines()
+            index = random.randrange(0, len(words))
+            return words[index].lower()
+            
