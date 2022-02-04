@@ -8,6 +8,7 @@ class Assistant:
         with open(words_path, 'r') as f:
             self.possible_words = f.read().splitlines()
         self.correction = []
+        self.clean_correction = []
         self.incorrect = [[], [], [], [], []]
         self.anchor = []
 
@@ -24,12 +25,12 @@ class Assistant:
             if '-' in self.correction[i]:
                 self.incorrect[i].append(self.correction[i])
             
-    def check_valid_anchor(self, word, letters, anchor) -> bool:
-        if not anchor:
+    def check_valid_anchor(self, word) -> bool:
+        if not self.anchor:
             return False
         
-        for index in anchor:
-            if word[index] != letters[index]:
+        for index in self.anchor:
+            if word[index] != self.clean_correction[index]:
                 return False
             
         return True
@@ -51,7 +52,7 @@ class Assistant:
                 new_list.append(element[0])
         return new_list
 
-    def is_invalid_guess(self, letters, word, anchor, incorrect_ltrs) -> bool:
+    def is_invalid_guess(self, word, incorrect_ltrs) -> bool:
         '''Finds if a word has either letters that have already been 
         guessed as incorrect or does not contain the anchor letters
         in the correct position
@@ -65,10 +66,10 @@ class Assistant:
             boolean
         '''
         # Checks if all the anchor letters are in the correct position
-        for i in range(len(letters)):
-            if i in anchor:
+        for i in range(len(self.clean_correction)):
+            if i in self.anchor:
                 continue
-            if letters[i] == word[i]:
+            if self.clean_correction[i] == word[i]:
                 return True
             
         # Checks if the word contains already guessed letters
@@ -79,7 +80,7 @@ class Assistant:
             
         return False
 
-    def get_potential_words(self, letters, anchors) -> list:
+    def get_potential_words(self) -> list:
         '''Finds all possible words given a few anchor letters
         or if given no anchor, returns words
             letters (list): letters of the guess
@@ -90,10 +91,10 @@ class Assistant:
             list: list of potential words
         '''
         potential_words = []
-        if not anchors:
+        if not self.anchor:
             return self.possible_words
         for word in self.possible_words:
-            if self.check_valid_anchor(word, letters, anchors):
+            if self.check_valid_anchor(word):
                 potential_words.append(word)
         return potential_words
 
@@ -105,19 +106,19 @@ class Assistant:
             choices.append(self.possible_words[index])
         return choices
         
-    def guess_word(self, guess, anchors=[], incorrect_ltrs=[]) -> list:
+    def guess_word(self, incorrect_ltrs=[]) -> list:
         guesses = []
         # TODO optimize search by stopping loop for guess at anchor
         # index 0 because this is a dictionary
-        potential = self.get_potential_words(guess, anchors)
+        potential = self.get_potential_words()
 
         for pword in potential:
             # Skips the word if it is invalid
-            if self.is_invalid_guess(guess, pword, anchors, incorrect_ltrs):
+            if self.is_invalid_guess(pword, incorrect_ltrs):
                 continue
             
             valid = True
-            for i, letter in enumerate(guess):
+            for i, letter in enumerate(self.clean_correction):
                 # Skips over letters that are already known to be incorrect
                 if letter in incorrect_ltrs[i]:
                     continue
@@ -146,8 +147,8 @@ if __name__ == '__main__':
         helper.set_incorrect()
 
         helper.incorrect = helper.clean_input(helper.incorrect)
-        modified_letters = helper.clean_input(letters)
-        helper.guess_word(modified_letters, anchor, incorrect)
+        helper.clean_correction = helper.clean_input(helper.correction)
+        helper.guess_word(incorrect)
         
         print(helper.pick_random_words())
         if len(helper.possible_words) <= 1:
