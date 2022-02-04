@@ -18,6 +18,10 @@ class Simulation:
             index = random.randrange(0, len(words))
             return words[index].lower()
             
+    def reset_simulation(self):
+        self.assisstant.reset()
+        self.game.reset()
+        
     def simulate_game(self):
         self.game.set_word()
         
@@ -45,8 +49,7 @@ class Simulation:
             self.game.end_game(corr)
 
 
-        print(f'The word was {self.game.word}!')
-
+            self.reset_simulation()
 
 if __name__ == '__main__':
     sim = Simulation()

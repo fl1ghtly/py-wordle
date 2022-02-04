@@ -12,6 +12,14 @@ class Assistant:
         self.incorrect = [[], [], [], [], []]
         self.anchor = []
 
+    def reset(self):
+        with open(words_path, 'r') as f:
+            self.possible_words = f.read().splitlines()
+        self.correction = []
+        self.clean_correction = []
+        self.incorrect = [[], [], [], [], []]
+        self.anchor = []
+        
     def set_correction(self, correction):
         self.correction = correction
         

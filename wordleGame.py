@@ -12,6 +12,11 @@ class Game:
         self.finished = False
         self.current_tries = 0
     
+    def reset(self):
+        self.win = False
+        self.finished = False
+        self.current_tries = 0
+    
     def set_word(self):
         with open(words_path, 'r') as f:
             words = f.read().splitlines()
