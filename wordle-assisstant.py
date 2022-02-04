@@ -7,22 +7,22 @@ class Assistant:
     def __init__(self) -> None:
         with open(words_path, 'r') as f:
             self.possible_words = f.read().splitlines()
-        self.guess = []
+        self.correction = []
         self.incorrect = [[], [], [], [], []]
         self.anchor = []
 
-    def set_guess(self, guess):
-        self.guess = guess
+    def set_correction(self, correction):
+        self.correction = correction
         
     def set_anchor(self) -> list:
-        for i in range(len(self.guess)):
-            if '*' in self.guess[i]:
+        for i in range(len(self.correction)):
+            if '*' in self.correction[i]:
                 self.anchor.append(i)
 
     def set_incorrect(self) -> list:
-        for i in range(len(self.guess)):
-            if '-' in self.guess[i]:
-                self.incorrect[i].append(self.guess[i])
+        for i in range(len(self.correction)):
+            if '-' in self.correction[i]:
+                self.incorrect[i].append(self.correction[i])
             
     def check_valid_anchor(self, word, letters, anchor) -> bool:
         if not anchor:
@@ -141,11 +141,11 @@ if __name__ == '__main__':
             print('Please choose a 5 letter word')
             continue
         
-        helper.set_guess(letters)
+        helper.set_correction(letters)
         helper.set_anchor()
         helper.set_incorrect()
 
-        incorrect = helper.clean_input(incorrect)
+        helper.incorrect = helper.clean_input(helper.incorrect)
         modified_letters = helper.clean_input(letters)
         helper.guess_word(modified_letters, anchor, incorrect)
         
