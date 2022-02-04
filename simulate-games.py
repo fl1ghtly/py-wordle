@@ -2,15 +2,19 @@ from wordleAssistant import Assistant
 from wordleGame import Game
 import os, sys
 import random
+import numpy as np
+import matplotlib.pyplot as plt
 
 words_path = os.path.join(sys.path[0], 'words.txt')
 
 class Simulation:
     MAX_SIMULATIONS = 100
+    DATA = {1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0}
     
     def __init__(self) -> None:
         self.assisstant = Assistant()
         self.game = Game()
+        self.success = 0
         
     def choose_initial_word(self):
         with open(words_path, 'r') as f:
@@ -63,3 +67,10 @@ class Simulation:
 if __name__ == '__main__':
     sim = Simulation()
     sim.simulate_game()
+
+    lists = sorted(sim.DATA.items())
+    x, y = zip(*lists)
+    
+    fig, ax = plt.subplots()
+    ax.bar(x, y)
+    plt.show()
