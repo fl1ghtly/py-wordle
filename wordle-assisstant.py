@@ -52,7 +52,7 @@ class Assistant:
                 new_list.append(element[0])
         return new_list
 
-    def is_invalid_guess(self, word, incorrect_ltrs) -> bool:
+    def is_invalid_guess(self, word) -> bool:
         '''Finds if a word has either letters that have already been 
         guessed as incorrect or does not contain the anchor letters
         in the correct position
@@ -73,9 +73,9 @@ class Assistant:
                 return True
             
         # Checks if the word contains already guessed letters
-        for i in range(len(incorrect_ltrs)):
-            for j in range(len(incorrect_ltrs[i])):
-                if incorrect_ltrs[i][j][0] == word[i]:
+        for i in range(len(self.incorrect)):
+            for j in range(len(self.incorrect[i])):
+                if self.incorrect[i][j][0] == word[i]:
                     return True
             
         return False
@@ -106,7 +106,7 @@ class Assistant:
             choices.append(self.possible_words[index])
         return choices
         
-    def guess_word(self, incorrect_ltrs=[]) -> list:
+    def guess_word(self) -> list:
         guesses = []
         # TODO optimize search by stopping loop for guess at anchor
         # index 0 because this is a dictionary
@@ -114,13 +114,13 @@ class Assistant:
 
         for pword in potential:
             # Skips the word if it is invalid
-            if self.is_invalid_guess(pword, incorrect_ltrs):
+            if self.is_invalid_guess(pword):
                 continue
             
             valid = True
             for i, letter in enumerate(self.clean_correction):
                 # Skips over letters that are already known to be incorrect
-                if letter in incorrect_ltrs[i]:
+                if letter in self.incorrect[i]:
                     continue
                 if letter not in pword and letter != '?':
                     valid = False
@@ -134,7 +134,6 @@ if __name__ == '__main__':
     running = True
     helper = Assistant()
     
-    incorrect = [[], [], [], [], []]
     while running:
         letters = input("What are the correct letters: ").split()
 
@@ -148,7 +147,7 @@ if __name__ == '__main__':
 
         helper.incorrect = helper.clean_input(helper.incorrect)
         helper.clean_correction = helper.clean_input(helper.correction)
-        helper.guess_word(incorrect)
+        helper.guess_word()
         
         print(helper.pick_random_words())
         if len(helper.possible_words) <= 1:
