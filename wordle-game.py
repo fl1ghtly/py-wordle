@@ -60,3 +60,18 @@ class Game:
                 correction[i] += '-'
 
         return correction
+    
+    def end_game(self, correction):
+        # Game is finished when max tries is exceeded
+        if self.current_tries >= self.MAX_TRIES:
+            self.finished = True
+            
+        for letter in correction:
+            if '*' not in letter:
+                return
+
+        # Game is finished when the correct word is found
+        self.finished = True
+        self.win = True
+                
+            
