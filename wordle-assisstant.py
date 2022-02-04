@@ -1,4 +1,5 @@
 import os, sys
+import random
 
 words_path = os.path.join(sys.path[0], 'words.txt')
 
@@ -87,13 +88,19 @@ def get_potential_words(letters, words, anchors) -> list:
     for word in words:
         if check_valid_anchor(word, letters, anchors):
             potential_words.append(word)
-        if not anchors:
-            potential_words.append(word)
     return potential_words
 
+def pick_random_words(words):
+    choices = []
+    domain = 5 if len(words) > 5 else len(words)
+    for i in range(domain):
+        index = random.randrange(0, len(words))
+        choices.append(words[index])
+    return choices
+    
 def guess_word(guess, words, anchors=[], incorrect_ltrs=[]) -> list:
     guesses = []
-    # TODO optimize search by stopping loop for letters at anchor
+    # TODO optimize search by stopping loop for guess at anchor
     # index 0 because this is a dictionary
     potential = get_potential_words(guess, words, anchors)
 
@@ -135,6 +142,6 @@ if __name__ == '__main__':
         modified_letters = clean_input(letters)
         possible_words = guess_word(modified_letters, possible_words, anchor, incorrect)
         
-        print(possible_words)
+        print(pick_random_words(possible_words))
         if len(possible_words) <= 1:
             running = False
