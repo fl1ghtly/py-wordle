@@ -77,7 +77,7 @@ class Assistant:
             
         return False
 
-    def get_potential_words(self, letters, words, anchors) -> list:
+    def get_potential_words(self, letters, anchors) -> list:
         '''Finds all possible words given a few anchor letters
         or if given no anchor, returns words
             letters (list): letters of the guess
@@ -89,25 +89,25 @@ class Assistant:
         '''
         potential_words = []
         if not anchors:
-            return words
-        for word in words:
+            return self.possible_words
+        for word in self.possible_words:
             if self.check_valid_anchor(word, letters, anchors):
                 potential_words.append(word)
         return potential_words
 
-    def pick_random_words(self, words):
+    def pick_random_words(self):
         choices = []
-        domain = 5 if len(words) > 5 else len(words)
+        domain = 5 if len(self.possible_words) > 5 else len(self.possible_words)
         for i in range(domain):
-            index = random.randrange(0, len(words))
-            choices.append(words[index])
+            index = random.randrange(0, len(self.possible_words))
+            choices.append(self.possible_words[index])
         return choices
         
-    def guess_word(self, guess, words, anchors=[], incorrect_ltrs=[]) -> list:
+    def guess_word(self, guess, anchors=[], incorrect_ltrs=[]) -> list:
         guesses = []
         # TODO optimize search by stopping loop for guess at anchor
         # index 0 because this is a dictionary
-        potential = self.get_potential_words(guess, words, anchors)
+        potential = self.get_potential_words(guess, anchors)
 
         for pword in potential:
             # Skips the word if it is invalid
@@ -125,7 +125,7 @@ class Assistant:
             if valid:
                 guesses.append(pword)
 
-        return guesses
+        self.possible_words = guesses
 
 if __name__ == '__main__':
     running = True
@@ -143,8 +143,8 @@ if __name__ == '__main__':
         incorrect = helper.find_incorrect(letters, incorrect)
         incorrect = helper.clean_input(incorrect)
         modified_letters = helper.clean_input(letters)
-        possible_words = helper.guess_word(modified_letters, possible_words, anchor, incorrect)
+        helper.guess_word(modified_letters, anchor, incorrect)
         
-        print(helper.pick_random_words(possible_words))
-        if len(possible_words) <= 1:
+        print(helper.pick_random_words())
+        if len(helper.possible_words) <= 1:
             running = False
