@@ -73,4 +73,8 @@ if __name__ == '__main__':
     
     fig, ax = plt.subplots()
     ax.bar(x, y)
+    plt.xticks(np.arange(0, len(x) + 1))
+    plt.xlabel('Number of Attempts')
+    plt.ylabel('Count')
+    plt.title('Probability of Success in Wordle')
     plt.show()
