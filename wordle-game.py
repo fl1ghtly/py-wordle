@@ -11,3 +11,10 @@ class Game:
         self.win = False
         self.finished = False
         self.current_tries = 0
+    
+
+    def set_word(self):
+        with open(words_path, 'r') as f:
+            words = f.read().splitlines()
+            index = random.randrange(0, len(words))
+            self.word = words[index].lower()
