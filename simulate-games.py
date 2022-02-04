@@ -46,3 +46,8 @@ class Simulation:
 
 
         print(f'The word was {self.game.word}!')
+
+
+if __name__ == '__main__':
+    sim = Simulation()
+    sim.simulate_game()
