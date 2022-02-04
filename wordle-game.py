@@ -75,3 +75,23 @@ class Game:
         self.win = True
                 
             
+if __name__ == '__main__':
+    g = Game()
+    g.set_word()
+    while not g.finished:
+        guess = input("Guess the word: ")
+
+        if len(guess) != 5:
+            print('Please only use 5 letter words')
+            continue
+
+        if not g.receive_guess(guess):
+            print("Please type in a valid word")
+            continue
+
+        corr = g.get_corrected_word()
+        print(corr)
+        g.end_game(corr)
+        
+
+    print(f'The word was {g.word}!')
