@@ -7,21 +7,23 @@ class Assistant:
     def __init__(self) -> None:
         with open(words_path, 'r') as f:
             self.possible_words = f.read().splitlines()
+        self.guess = []
+        self.incorrect = [[], [], [], [], []]
+        self.anchor = []
 
-    def find_anchors(self, letters) -> list:
-        anchor = []
-        for i in range(len(letters)):
-            if '*' in letters[i]:
-                anchor.append(i)
-        return anchor
+    def set_guess(self, guess):
+        self.guess = guess
+        
+    def set_anchor(self) -> list:
+        for i in range(len(self.guess)):
+            if '*' in self.guess[i]:
+                self.anchor.append(i)
 
-    def find_incorrect(self, letters, incorrect) -> list:
-        for i in range(len(letters)):
-            if '-' in letters[i]:
-                incorrect[i].append(letters[i])
+    def set_incorrect(self) -> list:
+        for i in range(len(self.guess)):
+            if '-' in self.guess[i]:
+                self.incorrect[i].append(self.guess[i])
             
-        return incorrect
-
     def check_valid_anchor(self, word, letters, anchor) -> bool:
         if not anchor:
             return False
@@ -135,12 +137,14 @@ if __name__ == '__main__':
     while running:
         letters = input("What are the correct letters: ").split()
 
-        if len(letters) > 5:
-            print('There are too many letters')
+        if len(letters) != 5:
+            print('Please choose a 5 letter word')
             continue
+        
+        helper.set_guess(letters)
+        helper.set_anchor()
+        helper.set_incorrect()
 
-        anchor = helper.find_anchors(letters)
-        incorrect = helper.find_incorrect(letters, incorrect)
         incorrect = helper.clean_input(incorrect)
         modified_letters = helper.clean_input(letters)
         helper.guess_word(modified_letters, anchor, incorrect)
