@@ -18,3 +18,15 @@ class Game:
             words = f.read().splitlines()
             index = random.randrange(0, len(words))
             self.word = words[index].lower()
+            
+
+    def receive_guess(self, guess):
+        with open(words_path, 'r') as f:
+            words = f.read().splitlines()
+            if guess.lower() not in words:
+                return False
+
+        self.guess = guess.lower()
+        self.current_tries += 1
+        return True
+        
