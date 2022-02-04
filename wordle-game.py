@@ -30,3 +30,33 @@ class Game:
         self.current_tries += 1
         return True
         
+    def get_corrected_word(self):
+        correction = []
+        word_list = list(self.word)
+
+        # This loop will not account for duplicate
+        # letters in different positions
+        # ex: These -> Those
+        # It will mark both e's as correct instead
+        # of only one e being correct 
+        for i, letter in enumerate(self.guess):
+            if letter in self.word:
+                # Correct Letter in correct position
+                if letter == self.word[i]:
+                    correction.append(letter + '*')
+                    word_list[i] = None
+                # Correct Letter in wrong position
+                else:
+                    correction.append(letter)
+            else:
+                #Wrong Letter
+                correction.append(letter + '-')
+        
+        # Loops over entire corrected list to find
+        # any duplicated letters that were mistakenly
+        # marked as correct in the wrong position
+        for i, char in enumerate(correction):
+            if char not in word_list and len(char) == 1:
+                correction[i] += '-'
+
+        return correction
