@@ -23,33 +23,42 @@ class Simulation:
         self.game.reset()
         
     def simulate_game(self):
-        self.game.set_word()
-        
-        guess = self.choose_initial_word()
-        self.game.receive_guess(guess)
-        corr = self.game.get_corrected_word()
-
-        while not self.game.finished:
-            print(f'Guess is {guess}')
-            print(f'Correction is {corr}')
+        for i in range(self.MAX_SIMULATIONS):
+            self.game.set_word()
             
-            self.assisstant.set_correction(corr)
-            self.assisstant.set_anchor()
-            self.assisstant.set_incorrect()
-
-            self.assisstant.incorrect = self.assisstant.clean_input(self.assisstant.incorrect)
-            self.assisstant.clean_correction = self.assisstant.clean_input(self.assisstant.correction)
-
-            self.assisstant.guess_word()
-            idx = random.randrange(0, len(self.assisstant.possible_words))
-            guess = self.assisstant.possible_words[idx]
+            guess = self.choose_initial_word()
             self.game.receive_guess(guess)
-
             corr = self.game.get_corrected_word()
-            self.game.end_game(corr)
+            num_guesses = 1
 
+            while not self.game.finished:
+                self.assisstant.set_correction(corr)
+                self.assisstant.set_anchor()
+                self.assisstant.set_incorrect()
 
+                self.assisstant.incorrect = self.assisstant.clean_input(self.assisstant.incorrect)
+                self.assisstant.clean_correction = self.assisstant.clean_input(self.assisstant.correction)
+
+                self.assisstant.guess_word()
+                idx = random.randrange(0, len(self.assisstant.possible_words))
+                guess = self.assisstant.possible_words[idx]
+                self.game.receive_guess(guess)
+
+                corr = self.game.get_corrected_word()
+                self.game.end_game(corr)
+                num_guesses += 1
+
+            if self.game.win:
+                self.success += 1
+
+                if num_guesses in Simulation.DATA:
+                    Simulation.DATA[num_guesses] += 1
+                else:
+                    # Used in case we update max tries
+                    Simulation.DATA.update({num_guesses: 1})
+            
             self.reset_simulation()
+                
 
 if __name__ == '__main__':
     sim = Simulation()
