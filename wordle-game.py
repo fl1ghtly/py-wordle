@@ -12,14 +12,12 @@ class Game:
         self.finished = False
         self.current_tries = 0
     
-
     def set_word(self):
         with open(words_path, 'r') as f:
             words = f.read().splitlines()
             index = random.randrange(0, len(words))
             self.word = words[index].lower()
             
-
     def receive_guess(self, guess):
         with open(words_path, 'r') as f:
             words = f.read().splitlines()
@@ -93,5 +91,4 @@ if __name__ == '__main__':
         print(corr)
         g.end_game(corr)
         
-
     print(f'The word was {g.word}!')
