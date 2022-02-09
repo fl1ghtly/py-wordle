@@ -1,6 +1,7 @@
+from ast import AugStore
 import os, sys
 import random
-
+from colorama import init, Fore, Back, Style
 
 words_path = os.path.join(sys.path[0], 'words.txt')
 
@@ -64,6 +65,16 @@ class Game:
 
         return correction
     
+    def print_correction(self, correction):
+        for letter in correction:
+            if '*' in letter:
+                print(Fore.BLACK + Back.GREEN + letter[0], end='')
+            elif '-' in letter:
+                print(Fore.BLACK + Back.WHITE + letter[0], end='')
+            else:
+                print(Fore.BLACK + Back.YELLOW + letter[0], end='')
+        print(Style.RESET_ALL)
+    
     def end_game(self, correction):
         # Game is finished when max tries is exceeded
         if self.current_tries >= self.MAX_TRIES:
@@ -79,11 +90,13 @@ class Game:
                 
             
 if __name__ == '__main__':
+    init(autoreset=True)
     g = Game()
     g.set_word()
+    print('Guess the Word:')
     while not g.finished:
-        guess = input("Guess the word: ")
-
+        guess = input()
+        print ('\033[1A\033[K\033[1A') # clears input line
         if len(guess) != 5:
             print('Please only use 5 letter words')
             continue
@@ -93,7 +106,7 @@ if __name__ == '__main__':
             continue
 
         corr = g.get_corrected_word()
-        print(corr)
+        g.print_correction(corr)
         g.end_game(corr)
         
     print(f'The word was {g.word}!')
